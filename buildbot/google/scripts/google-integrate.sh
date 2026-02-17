@@ -3,8 +3,12 @@ set -ex
 # Delete this repository as it does not exist for Ubuntu 24.04 and apt-get
 # will fail in every invocation otherwise.
 sudo rm -rf /etc/apt/sources.list.d/scalibr-apt.list
-apt update
-DEBIAN_FRONTEND=noninteractive apt install -y python3 python3-pip cmake ninja-build git ccache lsb-release wget software-properties-common gnupg
+while fuser /var/lib/apt/lists/lock >/dev/null 2>&1 ; do
+    echo "Waiting for apt lock..."
+    sleep 1
+done
+apt-get -o update
+apt-get -o DPkg::Lock::Timeout=-1 install -y python3 python3-pip cmake ninja-build git ccache lsb-release wget software-properties-common gnupg
 pip3 install --break-system-packages buildbot-worker==3.11.7
 
 wget https://apt.llvm.org/llvm.sh -O /tmp/llvm.sh
