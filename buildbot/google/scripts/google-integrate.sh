@@ -9,6 +9,7 @@ pip3 install --break-system-packages buildbot-worker==3.11.7
 
 wget https://apt.llvm.org/llvm.sh -O /tmp/llvm.sh
 chmod +x /tmp/llvm.sh
+sudo rm -rf /etc/apt/sources.list.d/scalibr-apt.list
 /tmp/llvm.sh 21
 ln -sf /usr/bin/clang-21 /usr/bin/cc
 ln -sf /usr/bin/clang++-21 /usr/bin/c++
