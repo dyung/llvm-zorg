@@ -7,7 +7,7 @@ while fuser /var/lib/apt/lists/lock >/dev/null 2>&1 ; do
     echo "Waiting for apt lock..."
     sleep 1
 done
-apt-get -o update
+apt-get update
 apt-get -o DPkg::Lock::Timeout=-1 install -y python3 python3-pip cmake ninja-build git ccache lsb-release wget software-properties-common gnupg
 pip3 install --break-system-packages buildbot-worker==3.11.7
 
