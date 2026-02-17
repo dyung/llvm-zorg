@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/google"
       version = "6.43.0"
     }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "2.35.1"
+    }
   }
 }
 
@@ -59,4 +63,47 @@ resource "google_container_node_pool" "bazel_ci" {
   node_config {
     machine_type = "n2-standard-64"
   }
+}
+
+data "google_client_config" "current" {}
+
+provider "kubernetes" {
+  host  = "https://${llvm_bazel_cluster.endpoint}"
+  token = data.google_client_config.current.access_token
+  cluster_ca_certificate = base64decode(
+    google_container_cluster.llvm_bazel_cluster.cluster_ca_certificate
+  )
+  alias = "llvm-bazel-cluster"
+}
+
+data "google_secret_manager_secret_version" "buildkite_agent_token" {
+  secret = "buildkite-agent-token"
+}
+
+resource "kubernetes_namespace" "bazel_ci" {
+  metadata {
+    name = "bazel-ci"
+  }
+}
+
+resource "kubernetes_secret" "buildkite_agent_token" {
+  metadata {
+    name      = "buildkite-agent-token"
+    namespace = kubernetes_namespace.bazel_ci.metadata[0].name
+  }
+
+  data = {
+    "token" = data.google_secret_manager_secret_version.buildkite_agent_token.secret_data
+  }
+
+  type       = "Opaque"
+  depends_on = [kubernetes_namespace.bazel_ci]
+}
+
+resource "kubernetes_manifest" "bazel_buildkite" {
+  manifest = yamldecode(file("bazel-buildkite.yaml"))
+  depends_on = [
+    kubernetes_namespace.bazel_ci,
+    kubernetes_secret.buildkite_agent_token
+  ]
 }
