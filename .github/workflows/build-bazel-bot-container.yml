@@ -28,7 +28,7 @@ jobs:
         uses: llvm/llvm-project/.github/actions/build-container@f091be6d53e447391ca23142cf9d49b2654116d7
         with:
           container-name: bazel-buildkite
-          context: google-bazel-bot/docker
+          context: google-bazel-bot
           target: bazel-buildkite
 
   push-container:

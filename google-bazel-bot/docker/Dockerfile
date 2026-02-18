@@ -48,7 +48,7 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-COPY *.sh /usr/local/bin/
+COPY docker/*.sh /usr/local/bin/
 RUN chmod og+rx /usr/local/bin/*.sh
 
 # Install bazelisk.
@@ -74,7 +74,7 @@ RUN echo 'install buildkite' ;\
     apt-get install -y buildkite-agent; \
     apt-get clean;
 
-COPY --chown=buildkite-agent:buildkite-agent pre-checkout /etc/buildkite-agent/hooks
+COPY --chown=buildkite-agent:buildkite-agent docker/pre-checkout /etc/buildkite-agent/hooks
 
 # Change sh client for buildkite-agent.
 RUN chsh -s /bin/bash buildkite-agent
