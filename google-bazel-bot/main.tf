@@ -68,12 +68,11 @@ resource "google_container_node_pool" "bazel_ci" {
 data "google_client_config" "current" {}
 
 provider "kubernetes" {
-  host  = "https://${llvm_bazel_cluster.endpoint}"
+  host  = "https://${google_container_cluster.llvm_bazel_cluster.endpoint}"
   token = data.google_client_config.current.access_token
   cluster_ca_certificate = base64decode(
-    google_container_cluster.llvm_bazel_cluster.cluster_ca_certificate
+    google_container_cluster.llvm_bazel_cluster.master_auth[0].cluster_ca_certificate
   )
-  alias = "llvm-bazel-cluster"
 }
 
 data "google_secret_manager_secret_version" "buildkite_agent_token" {
