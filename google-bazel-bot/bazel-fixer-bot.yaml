@@ -19,10 +19,10 @@ spec:
           image: ghcr.io/llvm/bazel-fixer-bot:latest
           resources:
             limits:
-              cpu: 63
+              cpu: "60"
               memory: 230Gi
             requests:
-              cpu: 63
+              cpu: "60"
               memory: 230Gi
           volumeMounts:
             - name: scratch-volume
@@ -58,6 +58,8 @@ spec:
               value: "llvm-bazel"
             - name: GOOGLE_CLOUD_LOCATION
               value: "global"
+            - name: POD_NAME
+              value: "dummy"
       volumes:
         - name: scratch-volume
           emptyDir:
