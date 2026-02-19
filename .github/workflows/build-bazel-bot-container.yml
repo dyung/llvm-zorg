@@ -10,10 +10,12 @@ on:
     paths:
       - .github/workflows/build-bazel-bot-container.yml
       - 'google-bazel-bot/docker/**'
+      - 'google-bazel-bot/bazel-bot/**'
   pull_request:
     paths:
       - .github/workflows/build-bazel-bot-container.yml
       - 'google-bazel-bot/docker/**'
+      - 'google-bazel-bot/bazel-bot/**'
 
 jobs:
   build-container:
